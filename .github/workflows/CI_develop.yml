@@ -28,8 +28,6 @@ jobs:
     - name: Build backend image
       run: |
         pwd
-        cd ..
-        pwd
         cd backend
         docker build -t backend .
 
