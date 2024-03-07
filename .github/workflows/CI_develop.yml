@@ -1,4 +1,5 @@
-#cambio de prueb
+#cambio de prueba
+
 name: CI Workflow - develop-branch
 
 on:
@@ -33,6 +34,7 @@ jobs:
     runs-on: self-hosted
     needs: build
     if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && startsWith(github.ref, 'refs/heads/feature/')) }}
+
     steps:
       - name: Run test
         run: echo 'here goes some test'
@@ -41,6 +43,7 @@ jobs:
     runs-on: self-hosted
     needs: test
     if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && startsWith(github.ref, 'refs/heads/feature/')) }}
+
     steps:
       - name: Login to Docker Hub
         uses: docker/login-action@v3
