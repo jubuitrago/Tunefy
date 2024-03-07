@@ -51,6 +51,6 @@ jobs:
       - name: Push backend image to registry
         run: |
           docker tag backend:latest jubuitrago/tunefy:dev-backend-latest
-          docker push jubuitrago/tunefy:dev-frontend-latest
+          docker push jubuitrago/tunefy:dev-backend-latest
 
 
