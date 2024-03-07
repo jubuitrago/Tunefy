@@ -1,6 +1,6 @@
 #cambio de prueba
 
-name: CI Workflow - main-branch
+name: CD Workflow - main-branch
 
 on:
   pull_request:
@@ -9,14 +9,40 @@ on:
     types: [closed]
 
 jobs:
-  build:
+  release:
     runs-on: self-hosted
-    if:  ${{ (github.event_name == 'pull_request' && github.base_ref == 'main' && github.head_ref == 'develop') }}
+    if:  ${{ (github.event_name == 'pull_request' && github.event.pull_request.merged == true && github.base_ref == 'main' && github.head_ref == 'develop') }}
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Set version
+        id: set_version
+        run: echo "::set-output name=VERSION::$(cat version.txt)"
+      - name: pull dev images from registry
+        run: |
+          docker pull jubuitrago/tunefy:dev-frontend-${{ steps.set_version.outputs.VERSION }}
+          docker pull jubuitrago/tunefy:dev-backend-${{ steps.set_version.outputs.VERSION }}
+      - name: Push production frontend image to registry
+        run: |
+          docker tag jubuitrago/tunefy:dev-frontend-${{ steps.set_version.outputs.VERSION }} jubuitrago/tunefy:prod-frontend-${{ steps.set_version.outputs.VERSION }}
+          docker push jubuitrago/tunefy:prod-frontend-${{ steps.set_version.outputs.VERSION }}
+      - name: Push production backend image to registry
+        run: |
+          docker tag jubuitrago/tunefy:dev-backend-${{ steps.set_version.outputs.VERSION }} jubuitrago/tunefy:prod-backend-${{ steps.set_version.outputs.VERSION }}
+          docker push jubuitrago/tunefy:prod-backend-${{ steps.set_version.outputs.VERSION }}
+
+  deploy:
+    runs-on: self-hosted
+    needs: release
+    if:  ${{ (github.event_name == 'pull_request' && github.event.pull_request.merged == true && github.base_ref == 'main' && github.head_ref == 'develop') }}
     steps:
       - name: Send signal to deploy
         run: |
           cd /home/ubuntu
-          pwd
+          sh start_deployment.sh
 
 
 

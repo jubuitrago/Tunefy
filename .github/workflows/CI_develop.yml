@@ -48,13 +48,16 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Set version
+        id: set_version
+        run: echo "::set-output name=VERSION::$(cat version.txt)"
       - name: Push frontend image to registry
         run: |
-          docker tag frontend:latest jubuitrago/tunefy:dev-frontend-latest
-          docker push jubuitrago/tunefy:dev-frontend-latest
+          docker tag frontend:latest jubuitrago/tunefy:dev-frontend-${{ steps.set_version.outputs.VERSION }}
+          docker push jubuitrago/tunefy:dev-frontend-${{ steps.set_version.outputs.VERSION }}
       - name: Push backend image to registry
         run: |
-          docker tag backend:latest jubuitrago/tunefy:dev-backend-latest
-          docker push jubuitrago/tunefy:dev-backend-latest
+          docker tag backend:latest jubuitrago/tunefy:dev-backend-${{ steps.set_version.outputs.VERSION }}
+          docker push jubuitrago/tunefy:dev-backend-${{ steps.set_version.outputs.VERSION }}
 
 
