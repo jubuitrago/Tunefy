@@ -14,8 +14,10 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build the Docker image
       run: |
-        docker stop $(docker ps -q)
-        docker container prune -af
+        if [ "$(docker ps -q)" ]; then
+          docker stop $(docker ps -q)
+        fi
+        docker container prune -f
         cd frontend
         docker build -t frontend_i .
         docker run -d --name tunefy-frontend frontend_i
