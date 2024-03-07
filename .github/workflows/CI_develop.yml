@@ -31,4 +31,8 @@ jobs:
     - name: Run frontend container
       run: |
         docker run -d --name tunefy-frontend frontend_i
+
+    - name: Access frontend container
+      run: |
+        docker exec -it tunefy-frontend sh
         
