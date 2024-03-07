@@ -1,0 +1,30 @@
+#cambio de prueba
+
+name: CI Workflow - main-branch
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [closed]
+
+jobs:
+  build:
+    runs-on: self-hosted
+    if:  ${{ (github.event_name == 'pull_request' && github.base_ref == 'main' && github.head_ref == 'develop') }}
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
