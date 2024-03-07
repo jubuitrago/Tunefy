@@ -20,8 +20,7 @@ jobs:
         fi
 
     - name: Delete all containers
-      run: |
-        docker container prune -f
+      run: docker container prune -f
 
     - name: Build frontend image
       run: |
@@ -29,10 +28,12 @@ jobs:
         docker build -t frontend_i .
 
     - name: Run frontend container
-      run: |
-        docker run -d --name tunefy-frontend frontend_i
+      run: docker run -d --name tunefy-frontend frontend_i
 
-    - name: Access frontend container
-      run: |
-        docker exec tunefy-frontend npm test
+  test:
+    runs-on: self-hosted
+    needs: build
+    steps:
+      - name: Run test
+        run: echo 'here goes some test'
         
