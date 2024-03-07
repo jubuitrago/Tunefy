@@ -21,11 +21,15 @@ jobs:
       run: docker container prune -f
     - name: Build frontend image
       run: |
-        cd home/ubuntu/actions-runner/_work/Tunefy/Tunefy/frontend/
+        pwd
+        cd frontend
+        pwd
         docker build -t frontend .
     - name: Build backend image
       run: |
-        cd home/ubuntu/actions-runner/_work/Tunefy/Tunefy/backend/
+        pwd
+        cd ..
+        cd backend
         docker build -t backend .
 
   test:
