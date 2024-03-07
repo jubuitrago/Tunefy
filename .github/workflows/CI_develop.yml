@@ -15,5 +15,5 @@ jobs:
     - name: Build the Docker image
       run: |
         cd frontend
-        docker-compose up --build
+        docker build -t frontend_i .
         
