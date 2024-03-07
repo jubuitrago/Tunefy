@@ -34,5 +34,5 @@ jobs:
 
     - name: Access frontend container
       run: |
-        docker exec -it tunefy-frontend sh
+        docker exec tunefy-frontend npm test
         
