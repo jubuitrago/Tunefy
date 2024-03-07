@@ -20,7 +20,7 @@ jobs:
           docker stop $(docker ps -q)
         fi
     - name: Delete all containers
-      run: docker container prune -af
+      run: docker container prune -f
     - name: Build frontend image
       run: |
         cd frontend
