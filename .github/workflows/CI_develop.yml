@@ -16,4 +16,5 @@ jobs:
       run: |
         cd frontend
         docker build -t frontend_i .
+        docker run -it --name tunefy-frontend frontend_i
         
