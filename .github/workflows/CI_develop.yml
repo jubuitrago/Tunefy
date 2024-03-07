@@ -12,13 +12,23 @@ jobs:
     runs-on: self-hosted
     steps:
     - uses: actions/checkout@v3
-    - name: Build the Docker image
+
+    - name: Stop all running containers
       run: |
         if [ "$(docker ps -q)" ]; then
           docker stop $(docker ps -q)
         fi
+
+    - name: Delete all containers
+      run: |
         docker container prune -f
+
+    - name: Build frontend image
+      run: |
         cd frontend
         docker build -t frontend_i .
+
+    - name: Run frontend container
+      run: |
         docker run -d --name tunefy-frontend frontend_i
         
