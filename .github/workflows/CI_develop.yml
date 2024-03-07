@@ -23,6 +23,11 @@ jobs:
       run: |
         cd frontend
         docker build -t frontend .
+    - name: Build frontend image
+      run: |
+        cd ..
+        cd backend
+        docker build -t backend .
 
   test:
     runs-on: self-hosted
@@ -40,9 +45,13 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Push image to registry
+      - name: Push frontend image to registry
         run: |
-          docker tag frontend:latest jubuitrago/tunefy:frontend-latest
-          docker push jubuitrago/tunefy:frontend-latest
+          docker tag frontend:latest jubuitrago/tunefy:dev-frontend-latest
+          docker push jubuitrago/tunefy:dev-frontend-latest
+      - name: Push backend image to registry
+        run: |
+          docker tag backend:latest jubuitrago/tunefy:dev-backend-latest
+          docker push jubuitrago/tunefy:dev-frontend-latest
 
 
