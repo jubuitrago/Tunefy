@@ -1,4 +1,4 @@
-#cambio de prueba
+#cambio de prueb
 
 name: CD Workflow - main-branch
 
@@ -43,18 +43,3 @@ jobs:
         run: |
           cd /home/ubuntu
           sh start_deployment.sh
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
