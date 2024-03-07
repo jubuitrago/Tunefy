@@ -42,7 +42,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Push image to registry
         run: |
-          docker tag frontend:frontend-latest jubuitrago/tunefy:frontend-latest
+          docker tag frontend:latest jubuitrago/tunefy:frontend-latest
           docker push jubuitrago/tunefy:frontend-latest
 
 
