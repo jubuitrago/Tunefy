@@ -1,4 +1,4 @@
-#cambio de prueb
+#cambio de prueba
 
 name: CI Workflow - develop-branch
 
@@ -36,7 +36,10 @@ jobs:
     if: ${{ github.event_name == 'push' || (github.event_name == 'pull_request' && startsWith(github.ref, 'refs/heads/feature/')) }}
     steps:
       - name: Run test
-        run: echo 'here goes some test'
+        run: |
+          echo "running test"
+          # docker run -d --name prueba frontend:latest
+          # docker exec prueba npm test
         
   release:
     runs-on: self-hosted
