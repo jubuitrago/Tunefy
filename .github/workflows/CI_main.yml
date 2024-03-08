@@ -33,7 +33,11 @@ jobs:
     if:  ${{ (github.event_name == 'pull_request' && github.base_ref == 'main' && github.head_ref == 'develop') }}
     steps:
       - name: Test images
-        run: echo 'here goes some test'
+        run: |
+          echo 'here goes some tests'
+          # docker run -d --name prueba prueba:latest
+          # docker exec prueba npm test
+
   
 
 
