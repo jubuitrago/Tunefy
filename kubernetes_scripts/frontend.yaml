@@ -29,7 +29,7 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: configs
-              key: REACT_APP_BACKEND_URL
+              key: PUBLIC_ALB_URL
       imagePullSecrets:
       - name: myregistrykey
 
