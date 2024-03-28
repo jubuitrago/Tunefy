@@ -55,6 +55,8 @@ spec:
             secretKeyRef:
               name: secrets
               key: AI21_TOKEN
+      imagePullSecrets:
+      - name: myregistrykey
 
 ---
 apiVersion: v1
@@ -68,3 +70,4 @@ spec:
     - protocol: TCP
       port: 3001
       targetPort: 3001
+      nodePort: 30001
