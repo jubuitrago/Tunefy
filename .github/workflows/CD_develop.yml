@@ -34,7 +34,10 @@ jobs:
                 username: ${{ secrets.DOCKERHUB_USERNAME }}
                 password: ${{ secrets.DOCKERHUB_TOKEN }}
             - name: Push production frontend image to registry
-              run: sudo docker push jubuitrago/tunefy:dev-frontend-$((${{ vars.DEV_VERSION }} + 1))
+              run: |
+                sudo docker images
+                sudo docker tag jubuitrago/tunefy:dev-frontend-$((${{ vars.DEV_VERSION }} + 1)) jubuitrago/tunefy:dev-frontend-$((${{ vars.DEV_VERSION }} + 1))
+                sudo docker push jubuitrago/tunefy:dev-frontend-$((${{ vars.DEV_VERSION }} + 1))
             - name: Push production backend image to registry
               run: sudo docker push jubuitrago/tunefy:dev-backend-$((${{ vars.DEV_VERSION }} + 1))
             - name: Update dev-version on github
