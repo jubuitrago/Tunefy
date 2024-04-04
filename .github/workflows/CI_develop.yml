@@ -15,6 +15,7 @@ jobs:
             - name: Build frontend image
               run: |
                 cd frontend
+                whoami
                 docker build -t frontend .
             - name: Build backend image
               run: |
