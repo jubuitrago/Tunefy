@@ -8,7 +8,7 @@ on:
 
 jobs:
     build:
-        runs-on: [self-hosted, dev-runner]
+        runs-on: self-hosted
         if:  ${{ startsWith(github.event.pull_request.head.ref, 'feature/')}}
         steps:
             - uses: actions/checkout@v3
@@ -21,7 +21,7 @@ jobs:
                 cd backend
                 docker build -t backend .
     test:
-        runs-on: [self-hosted, dev-runner]
+        runs-on: self-hosted
         needs: build
         if:  ${{ (github.base_ref == 'develop' && startsWith(github.ref, 'refs/heads/feature/')) }}
         steps:
