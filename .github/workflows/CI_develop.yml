@@ -8,7 +8,7 @@ on:
 
 jobs:
     build:
-        runs-on: self-hosted
+        runs-on: [self-hosted, dev-runner]
         if:  ${{ startsWith(github.event.pull_request.head.ref, 'feature/')}}
         steps:
             - uses: actions/checkout@v3
