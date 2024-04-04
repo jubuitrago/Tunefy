@@ -24,7 +24,7 @@ jobs:
             - name: Build backend image
               run: |
                 cd backend
-                sudo docker build -t dev-backend + 1)) .
+                sudo docker build -t dev-backend + 1 .
             - name: Print images
               run: sudo docker images
             - name: Push production frontend image to registry
