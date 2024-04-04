@@ -58,8 +58,8 @@ jobs:
                 echo "deleting feature branch"
             - name: Clean docker
               run: |
-                if [ "$(sudo docker ps -q)" ]; then
-                  sudo docker stop $(sudo docker ps -q)
+                if [ "$(docker ps -q)" ]; then
+                  docker stop $(docker ps -q)
                 fi
-                sudo docker system prune -af
+                docker system prune -af
 
