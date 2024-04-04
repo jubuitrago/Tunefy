@@ -31,7 +31,10 @@ jobs:
                 docker images
                 docker push jubuitrago/tunefy:dev-frontend-$((${{ vars.DEV_VERSION }} + 1))
             - name: Push production backend image to registry
-              run: docker push jubuitrago/tunefy:dev-backend-$((${{ vars.DEV_VERSION }} + 1))
+              run: |
+                docker tag dev-backend:latest jubuitrago/tunefy:dev-backend-$((${{ vars.DEV_VERSION }} + 1))
+                docker images
+                docker push jubuitrago/tunefy:dev-backend-$((${{ vars.DEV_VERSION }} + 1))
             - name: Update dev-version on github
               uses: action-pack/set-variable@v1
               with:
