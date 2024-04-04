@@ -20,6 +20,8 @@ jobs:
               run: |
                 cd backend
                 sudo docker build -t jubuitrago/tunefy:dev-backend-$((${{ vars.DEV_VERSION }} + 1)) .
+            - name: Print images
+              run: sudo docker images
     push-to-registry:
         runs-on: self-hosted
         needs: build
