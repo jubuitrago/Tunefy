@@ -9,7 +9,7 @@ on:
 jobs:
     build:
         runs-on: [self-hosted, dev-runner]
-        if:  ${{ (github.event_name == 'pull_request' && startsWith(github.ref, 'refs/heads/feature/')) }}
+        if:  ${{ startsWith(github.ref, 'refs/heads/feature/') }}
         steps:
             - uses: actions/checkout@v3
             - name: Build frontend image
