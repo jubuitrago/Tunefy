@@ -15,14 +15,15 @@ jobs:
             - name: Build frontend image
               run: |
                 cd frontend
-                echo "nueva version: "
-                sudo docker build -t jubuitrago/tunefy:${{vars.DEV_VERSION}} .
+                sudo docker build -t jubuitrago/tunefy:dev-frontend-$((${{ vars.DEV_VERSION }} + 1)) .
             - name: Build backend image
               run: |
                 cd backend
-                sudo docker build -t jubuitrago/tunefy:${{vars.DEV_VERSION}} .
-            - name: Set dev new version
-              run: |
+                sudo docker build -t jubuitrago/tunefy:dev-backend-$((${{ vars.DEV_VERSION }} + 1)) .
+
+
+
+
 
     push-to-registry:
         runs-on: self-hosted
@@ -60,4 +61,10 @@ jobs:
             - name: delete feature branch
               run: |
                 echo "deleting feature branch"
+            - name: Clean docker
+              run: |
+                if [ "$(sudo docker ps -q)" ]; then
+                  sudo docker stop $(sudo docker ps -q)
+                fi
+                sudo docker system prune -af
 
