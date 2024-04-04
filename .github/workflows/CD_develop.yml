@@ -33,9 +33,9 @@ jobs:
                 username: ${{ secrets.DOCKERHUB_USERNAME }}
                 password: ${{ secrets.DOCKERHUB_TOKEN }}
             - name: Push production frontend image to registry
-              run: docker push jubuitrago/tunefy:prod-frontend-$((${{ vars.DEV_VERSION }} + 1))
+              run: sudo docker push jubuitrago/tunefy:prod-frontend-$((${{ vars.DEV_VERSION }} + 1))
             - name: Push production backend image to registry
-              run: docker push jubuitrago/tunefy:prod-backend-$((${{ vars.DEV_VERSION }} + 1))
+              run: sudo docker push jubuitrago/tunefy:prod-backend-$((${{ vars.DEV_VERSION }} + 1))
             - name: Update dev-version on github
               uses: action-pack/set-variable@v1
               with:
