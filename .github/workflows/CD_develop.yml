@@ -29,9 +29,8 @@ jobs:
               run: sudo docker images
             - name: Push production frontend image to registry
               run: |
-                sudo docker images
                 sudo docker tag dev-frontend:latest jubuitrago/tunefy:dev-frontend-$((${{ vars.DEV_VERSION }} + 1))
-                sudo docker login
+                sudo docker images
                 sudo docker push jubuitrago/tunefy:dev-frontend-$((${{ vars.DEV_VERSION }} + 1))
             - name: Push production backend image to registry
               run: sudo docker push jubuitrago/tunefy:dev-backend-$((${{ vars.DEV_VERSION }} + 1))
