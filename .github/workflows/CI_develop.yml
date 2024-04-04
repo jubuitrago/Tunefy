@@ -15,11 +15,11 @@ jobs:
             - name: Build frontend image
               run: |
                 cd frontend
-                sudo docker build -t frontend .
+                docker build -t frontend .
             - name: Build backend image
               run: |
                 cd backend
-                sudo docker build -t backend .
+                docker build -t backend .
     test:
         runs-on: self-hosted
         needs: build
@@ -33,7 +33,7 @@ jobs:
                 # docker exec prueba npm test
             - name: Clean docker
               run: |
-                if [ "$(sudo docker ps -q)" ]; then
-                  sudo docker stop $(sudo docker ps -q)
+                if [ "$(docker ps -q)" ]; then
+                  docker stop $(docker ps -q)
                 fi
-                sudo docker system prune -af
+                docker system prune -af
