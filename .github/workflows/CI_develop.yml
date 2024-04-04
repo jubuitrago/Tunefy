@@ -1,14 +1,14 @@
 name: CI Workflow - develop-branch
 
 on:
-    pull_request:
-      branches:
-        - develop
-      types: [opened]
+  pull_request:
+    branches:
+      - develop
+    types: [opened]
 
 jobs:
     build:
-        runs-on: [self-hosted, dev-runner]
+        runs-on: self-hosted
         if:  ${{ startsWith(github.ref, 'refs/heads/feature/') }}
         steps:
             - uses: actions/checkout@v3
