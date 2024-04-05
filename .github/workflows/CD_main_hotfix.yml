@@ -33,10 +33,14 @@ jobs:
                 echo 'paso1'
                 IFS='.' read -r -a version_parts <<< "$CURRENT_VERSION"
                 echo 'paso2'
-                ((version_parts[2]++))
+                temp="${version_parts[2]}"
                 echo 'paso3'
-                NEW_VERSION="${version_parts[0]}.${version_parts[1]}.${version_parts[2]}"
+                ((temp++))
                 echo 'paso4'
+                version_parts[2]=$temp
+                echo 'paso5'
+                NEW_VERSION="${version_parts[0]}.${version_parts[1]}.${version_parts[2]}"
+                echo 'paso6'
                 echo "::set-output name=PROD_VERSION::$NEW_VERSION"
 
             - name: Push production frontend image to registry
