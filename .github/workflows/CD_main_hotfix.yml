@@ -39,14 +39,14 @@ jobs:
 
             - name: Push production frontend image to registry
               run: |
-                docker tag prod-frontend:latest jubuitrago/tunefy:${{ steps.set_version.outputs.PROD_VERSION }}
+                docker tag prod-frontend:latest jubuitrago/tunefy:frontend-${{ steps.set_version.outputs.PROD_VERSION }}
                 docker images
-                docker push jubuitrago/tunefy:${{ steps.set_version.outputs.PROD_VERSION }}
+                docker push jubuitrago/tunefy:frontend-${{ steps.set_version.outputs.PROD_VERSION }}
             - name: Push production backend image to registry
               run: |
-                docker tag prod-backend:latest jubuitrago/tunefy:${{ steps.set_version.outputs.PROD_VERSION }}
+                docker tag prod-backend:latest jubuitrago/tunefy:backend-${{ steps.set_version.outputs.PROD_VERSION }}
                 docker images
-                docker push jubuitrago/tunefy:${{ steps.set_version.outputs.PROD_VERSION }}
+                docker push jubuitrago/tunefy:backend-${{ steps.set_version.outputs.PROD_VERSION }}
           
             - name: Update dev-version on github
               uses: action-pack/set-variable@v1
