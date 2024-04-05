@@ -30,9 +30,11 @@ jobs:
               id: set_version
               run: |
                 CURRENT_VERSION=${{ vars.PROD_VERSION }}
+                echo $CURRENT_VERSION
                 IFS='.' read -r -a version_parts <<< "$CURRENT_VERSION"
                 ((version_parts[2]++))
                 NEW_VERSION="${version_parts[0]}.${version_parts[1]}.${version_parts[2]}"
+                echo $NEW_VERSION
                 echo "::set-output name=PROD_VERSION::$NEW_VERSION"
 
             - name: Push production frontend image to registry
