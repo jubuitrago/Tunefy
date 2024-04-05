@@ -35,7 +35,7 @@ jobs:
                 echo 'paso2'
                 temp="${version_parts[2]}"
                 echo 'paso3'
-                ((temp++))
+                temp=$((temp + 1))
                 echo 'paso4'
                 version_parts[2]=$temp
                 echo 'paso5'
