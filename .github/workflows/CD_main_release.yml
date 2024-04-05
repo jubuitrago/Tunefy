@@ -7,54 +7,65 @@ on:
       types: [closed]
 
 jobs:
-    build:
-        runs-on: [self-hosted, prod-runner]
-        if:  ${{ (github.base_ref == 'main' && github.event.pull_request.merged == true && github.head_ref == 'release') }}
-        steps:
-            - uses: actions/checkout@v3
-            - name: Build frontend image
-              run: |
-                cd frontend
-                docker build -t frontend .
-            - name: Build backend image
-              run: |
-                cd backend
-                docker build -t backend .
-
-    push-to-registry:
-        runs-on: [self-hosted, prod-runner]
-        needs: build
-        if:  ${{ (github.base_ref == 'main' && github.event.pull_request.merged == true && github.head_ref == 'release') }}
-        steps:
-            - name: Login to Docker Hub
-              uses: docker/login-action@v3
-              with:
-                username: ${{ secrets.DOCKERHUB_USERNAME }}
-                password: ${{ secrets.DOCKERHUB_TOKEN }}
-            - name: Push production frontend image to registry
-              run: |
-                docker tag jubuitrago/tunefy:dev-frontend- jubuitrago/tunefy:prod-frontend-
-                docker push jubuitrago/tunefy:prod-frontend-
-            - name: Push production backend image to registry
-              run: |
-                docker tag jubuitrago/tunefy:dev-backend- jubuitrago/tunefy:prod-backend-
-                docker push jubuitrago/tunefy:prod-backend-
-
-    deploy:
-        runs-on: [self-hosted, dev-runner]
-        needs: push-to-registry
-        if:  ${{ (github.base_ref == 'main' && github.event.pull_request.merged == true && github.head_ref == 'release') }}
-        steps:
-            - name: Deploy images to production environment
-              run: |
-                echo "deployment started"
+    build_and_push_to_registry:
+            runs-on: self-hosted
+            if:  ${{ github.event.pull_request.merged == true && github.head_ref == 'release' }}
+            steps:
+                - uses: actions/checkout@v3
+                - name: Build frontend image
+                  run: |
+                    cd frontend
+                    docker build -t prod-frontend .
+                - name: Build backend image
+                  run: |
+                    cd backend
+                    docker build -t prod-backend .
+                - name: Login to Docker Hub
+                  uses: docker/login-action@v3
+                  with:
+                    username: ${{ secrets.DOCKERHUB_USERNAME }}
+                    password: ${{ secrets.DOCKERHUB_TOKEN }}
+                - name: Push production frontend image to registry
+                  run: |
+                    docker tag prod-frontend:latest jubuitrago/tunefy:$((${{ vars.DEV_VERSION }} + 1))
+                    docker images
+                    docker push jubuitrago/tunefy:$((${{ vars.DEV_VERSION }} + 1))
+                - name: Push production backend image to registry
+                  run: |
+                    docker tag prod-backend:latest jubuitrago/tunefy:$((${{ vars.DEV_VERSION }} + 1))
+                    docker images
+                    docker push jubuitrago/tunefy:$((${{ vars.DEV_VERSION }} + 1))
+                - name: Set version
+                  id: set_version
+                  run: echo "::set-output name=VERSION::$((${{ vars.DEV_VERSION }} + 1))"
+                - name: Update dev-version on github
+                  uses: action-pack/set-variable@v1
+                  with:
+                    name: 'DEV_VERSION'
+                    value: ${{ steps.set_version.outputs.VERSION }}
+                    token: ${{ secrets.REPO_ACCESS_TOKEN }}
     
+    deploy:
+            runs-on: self-hosted
+            needs: build_and_push_to_registry
+            if:  ${{ github.event.pull_request.merged == true && github.head_ref == 'hotfix' }}
+            steps:
+              - name: Deploy images to development environment
+                run: |
+                  echo "deployment started"
+                  
     delete-feature-branch:
-        runs-on: [self-hosted, dev-runner]
-        needs: deploy
-        if:  ${{ (github.base_ref == 'main' && github.event.pull_request.merged == true && github.head_ref == 'release') }}
-        steps:
-            - name: delete release and develop branch
-              run: |
-                echo "deleting release and develop branch"
+            runs-on: self-hosted
+            needs: deploy
+            if:  ${{ github.event.pull_request.merged == true && github.head_ref == 'hotfix' }}
+            steps:
+                - name: delete feature branch
+                  run: |
+                    echo "deleting feature branch"
+                - name: Clean docker
+                  run: |
+                    if [ "$(docker ps -q)" ]; then
+                      docker stop $(docker ps -q)
+                    fi
+                    docker system prune -af
 
