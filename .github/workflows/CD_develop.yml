@@ -35,11 +35,14 @@ jobs:
                 docker tag dev-backend:latest jubuitrago/tunefy:dev-backend-$((${{ vars.DEV_VERSION }} + 1))
                 docker images
                 docker push jubuitrago/tunefy:dev-backend-$((${{ vars.DEV_VERSION }} + 1))
+            - name: Set version
+              id: set_version
+              run: echo "::set-output name=VERSION::$((${{ vars.DEV_VERSION }} + 1))"
             - name: Update dev-version on github
               uses: action-pack/set-variable@v1
               with:
                 name: 'DEV_VERSION'
-                value: "$((${{ vars.DEV_VERSION }} + 1))"
+                value: ${{ steps.set_version.outputs.VERSION }}
                 token: ${{ secrets.REPO_ACCESS_TOKEN }}
 
     deploy:
