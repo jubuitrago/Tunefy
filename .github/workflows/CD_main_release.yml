@@ -7,7 +7,7 @@ on:
       types: [closed]
 
 jobs:
-    build_and_push_to_registry:
+        build_and_push_to_registry:
             runs-on: self-hosted
             if:  ${{ github.event.pull_request.merged == true && github.head_ref == 'release' }}
             steps:
@@ -25,39 +25,50 @@ jobs:
                   with:
                     username: ${{ secrets.DOCKERHUB_USERNAME }}
                     password: ${{ secrets.DOCKERHUB_TOKEN }}
-                - name: Push production frontend image to registry
-                  run: |
-                    docker tag prod-frontend:latest jubuitrago/tunefy:$((${{ vars.DEV_VERSION }} + 1))
-                    docker images
-                    docker push jubuitrago/tunefy:$((${{ vars.DEV_VERSION }} + 1))
-                - name: Push production backend image to registry
-                  run: |
-                    docker tag prod-backend:latest jubuitrago/tunefy:$((${{ vars.DEV_VERSION }} + 1))
-                    docker images
-                    docker push jubuitrago/tunefy:$((${{ vars.DEV_VERSION }} + 1))
+    
                 - name: Set version
                   id: set_version
-                  run: echo "::set-output name=VERSION::$((${{ vars.DEV_VERSION }} + 1))"
+                  run: |
+                    CURRENT_VERSION=${{ vars.PROD_VERSION }}
+                    IFS='.' read -r -a version_parts <<< "$CURRENT_VERSION"
+                    temp="${version_parts[1]}"
+                    temp=$((temp + 1))
+                    version_parts[1]=$temp
+                    version_parts[2]=0
+                    NEW_VERSION="${version_parts[0]}.${version_parts[1]}.${version_parts[2]}"
+                    echo "::set-output name=PROD_VERSION::$NEW_VERSION"
+    
+                - name: Push production frontend image to registry
+                  run: |
+                    docker tag prod-frontend:latest jubuitrago/tunefy:${{ steps.set_version.outputs.PROD_VERSION }}
+                    docker images
+                    docker push jubuitrago/tunefy:${{ steps.set_version.outputs.PROD_VERSION }}
+                - name: Push production backend image to registry
+                  run: |
+                    docker tag prod-backend:latest jubuitrago/tunefy:${{ steps.set_version.outputs.PROD_VERSION }}
+                    docker images
+                    docker push jubuitrago/tunefy:${{ steps.set_version.outputs.PROD_VERSION }}
+              
                 - name: Update dev-version on github
                   uses: action-pack/set-variable@v1
                   with:
-                    name: 'DEV_VERSION'
-                    value: ${{ steps.set_version.outputs.VERSION }}
+                    name: 'PROD_VERSION'
+                    value: ${{ steps.set_version.outputs.PROD_VERSION }}
                     token: ${{ secrets.REPO_ACCESS_TOKEN }}
     
-    deploy:
+        deploy:
             runs-on: self-hosted
             needs: build_and_push_to_registry
-            if:  ${{ github.event.pull_request.merged == true && github.head_ref == 'hotfix' }}
+            if:  ${{ github.event.pull_request.merged == true && github.head_ref == 'release' }}
             steps:
               - name: Deploy images to development environment
                 run: |
                   echo "deployment started"
                   
-    delete-feature-branch:
+        delete-feature-branch:
             runs-on: self-hosted
             needs: deploy
-            if:  ${{ github.event.pull_request.merged == true && github.head_ref == 'hotfix' }}
+            if:  ${{ github.event.pull_request.merged == true && github.head_ref == 'release' }}
             steps:
                 - name: delete feature branch
                   run: |
@@ -68,4 +79,3 @@ jobs:
                       docker stop $(docker ps -q)
                     fi
                     docker system prune -af
-
