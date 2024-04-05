@@ -39,7 +39,7 @@ jobs:
               uses: action-pack/set-variable@v1
               with:
                 name: 'DEV_VERSION'
-                value: $((${{ vars.DEV_VERSION }} + 1))
+                value: "$((${{ vars.DEV_VERSION }} + 1))"
                 token: ${{ secrets.REPO_ACCESS_TOKEN }}
 
     deploy:
