@@ -1,5 +1,5 @@
 name: CD Workflow - main-branch - hotfix
-#
+
 on:
     pull_request:
       branches:
